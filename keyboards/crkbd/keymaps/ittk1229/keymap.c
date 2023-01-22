@@ -16,7 +16,7 @@ enum custom_keycodes {
   RAISE = SAFE_RANGE,
   LOWER,
   ESC_MHEN,
-  ALT_TAB
+  SWITCH
 };
 
 // 複合キーを8文字までの変数に
@@ -38,7 +38,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
        KC_TAB,  HOME_A,  HOME_O,  HOME_E,  HOME_I,    KC_U,                         KC_G,  HOME_T,  HOME_N,  HOME_S,  HOME_B, JP_QUOT,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      ALT_TAB,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_F,                         KC_H,    KC_J,    KC_K,    KC_L, JP_SLSH,  KC_DEL,\
+       SWITCH,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_F,                         KC_H,    KC_J,    KC_K,    KC_L, JP_SLSH,  KC_DEL,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           KC_LSFT,   LOWER,  KC_SPC,     KC_ENT,   RAISE, KC_BSPC\
                                       //`--------------------------'  `--------------------------'
@@ -138,14 +138,18 @@ static bool lower_pressed = false;
 static bool raise_pressed = false;
 
 
-// alt_tab
-bool is_alt_tab_active = false;
-uint16_t alt_tab_timer = 0;
+// switch
+bool is_mac = true;
+
+#define KC_SW is_mac ? KC_LGUI : KC_LALT
+
+bool is_switch_active = false;
+uint16_t switch_timer = 0;
 
 void matrix_scan_user(void) {
-  if (is_alt_tab_active && timer_elapsed(alt_tab_timer) > 1000) {
-    unregister_code(KC_LALT);
-    is_alt_tab_active = false;
+  if (is_switch_active && timer_elapsed(switch_timer) > 1000) {
+    unregister_code(KC_SW);
+    is_switch_active = false;
   }
 }
 
@@ -204,13 +208,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return false;
       break;
-    case ALT_TAB:
+    case SWITCH:
       if (record->event.pressed) {
-        if (!is_alt_tab_active) {
-          is_alt_tab_active = true;
-          register_code(KC_LALT);
+        if (!is_switch_active) {
+          is_switch_active = true;
+          register_code(KC_SW);
         }
-        alt_tab_timer = timer_read();
+        switch_timer = timer_read();
         register_code(KC_TAB);
       } else {
         unregister_code(KC_TAB);
