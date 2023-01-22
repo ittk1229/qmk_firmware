@@ -1,6 +1,6 @@
 # ittk1229
 
-[![Image from Gyazo](https://i.gyazo.com/d2af7181a38e8909ab4213c061085685.png)](https://gyazo.com/d2af7181a38e8909ab4213c061085685)
+[![Image from Gyazo](https://i.gyazo.com/fb0aefcccf8ab35e5d7c2441a651060f.png)](https://gyazo.com/fb0aefcccf8ab35e5d7c2441a651060f)
 
 ## Features
 
@@ -11,8 +11,9 @@
 -   <kbd>Raise</kbd> を単体で押すと IME を ON に、<kbd>Lower</kbd> を単体で押すと IME を OFF にできる
     -   [QMK Firmware で Raise/Lower と変換/無変換を同じキーに割り当てる - Okapies' Archive](https://okapies.hateblo.jp/entry/2019/02/02/133953)
 -   [Home row mods](https://precondition.github.io/home-row-mods) を採用し、ホームポジションにあるキーを長押しすると修飾キーが入力できる
--   <kbd>CapsLock</kbd> が US 配列と同じ仕様になっている
-    -   押すと単に大文字小文字が切り替わる
+-   <kbd>Alt + Tab</kbd> によるウィンドの切り替えが 1 キーでできる
+    -   mac では <kbd>command + tab</kbd> によるアプリの切り替えができる
+        -   `keymap.c` で `bool is_mac = true;` とする必要がある
 -   <kbd>esc</kbd> を押すと IME も OFF になる
     -   vim で日本語入力をする際、ノーマルモードに戻るたびに IME を OFF する手間を省く
 -   [EUCALYN 配列](https://eucalyn.hatenadiary.jp/entry/about-eucalyn-layout)を少し改変した配列になっている
