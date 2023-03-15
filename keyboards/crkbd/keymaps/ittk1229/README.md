@@ -12,8 +12,7 @@
     -   [QMK Firmware で Raise/Lower と変換/無変換を同じキーに割り当てる - Okapies' Archive](https://okapies.hateblo.jp/entry/2019/02/02/133953)
 -   [Home row mods](https://precondition.github.io/home-row-mods) を採用し、ホームポジションにあるキーを長押しすると修飾キーが入力できる
 -   <kbd>Alt + Tab</kbd> によるウィンドの切り替えが 1 キーでできる
-    -   mac では <kbd>command + tab</kbd> によるアプリの切り替えができる
-        -   `keymap.c` で `bool is_mac = true;` とする必要がある
+    -   mac でも alt-tab などの利用を想定
 -   <kbd>esc</kbd> を押すと IME も OFF になる
     -   vim で日本語入力をする際、ノーマルモードに戻るたびに IME を OFF する手間を省く
 -   [EUCALYN 配列](https://eucalyn.hatenadiary.jp/entry/about-eucalyn-layout)を少し改変した配列になっている
@@ -46,6 +45,11 @@
 
 -   ファンクションキーが入力できる
 -   LED の切り替えができる
+-   Minecraft レイヤーの呼び出し
+
+### Minecraft レイヤー
+
+-   Minecraft の操作で主に使うキーを左手のみに集めた
 
 ### OLED display
 

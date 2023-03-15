@@ -9,6 +9,7 @@ enum layers {
   _LOWER,
   _RAISE,
   _ADJUST,
+  _MINECRAFT
 };
 
 // マクロキーの定義
@@ -16,7 +17,7 @@ enum custom_keycodes {
   RAISE = SAFE_RANGE,
   LOWER,
   ESC_MHEN,
-  SWITCH
+  ALT_TAB
 };
 
 // 複合キーを8文字までの変数に
@@ -28,7 +29,7 @@ enum custom_keycodes {
 #define HOME_N SFT_T(KC_N)
 #define HOME_S ALT_T(KC_S)
 #define HOME_B GUI_T(KC_B)
-
+#define TG_MC TG(_MINECRAFT)
 
 // レイヤーごとにキーマップを定義
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -38,7 +39,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
        KC_TAB,  HOME_A,  HOME_O,  HOME_E,  HOME_I,    KC_U,                         KC_G,  HOME_T,  HOME_N,  HOME_S,  HOME_B, JP_QUOT,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       SWITCH,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_F,                         KC_H,    KC_J,    KC_K,    KC_L, JP_SLSH,  KC_DEL,\
+      ALT_TAB,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_F,                         KC_H,    KC_J,    KC_K,    KC_L, JP_SLSH,  KC_DEL,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           KC_LSFT,   LOWER,  KC_SPC,     KC_ENT,   RAISE, KC_BSPC\
                                       //`--------------------------'  `--------------------------'
@@ -74,11 +75,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
         KC_NO,  KC_F11,  KC_F12,   KC_NO,   KC_NO,   KC_NO,                        KC_NO, RGB_TOG,   KC_NO,   KC_NO,   KC_NO,   KC_NO,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,                        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,\
+        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,                        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   TG_MC,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                             KC_NO,   LOWER,   KC_NO,      KC_NO,   RAISE,   KC_NO\
                                       //`--------------------------'  `--------------------------'
-  )
+  ),
+
+  [_MINECRAFT] = LAYOUT( \
+  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
+       KC_ESC,   KC_NO,    KC_Q,    KC_W,    KC_E,    KC_T,                        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,\
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+       KC_TAB,   KC_NO,    KC_A,    KC_S,    KC_D,    KC_F,                        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,\
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+      JP_SLSH,   KC_F1,   KC_F2,   KC_F3,   KC_F5,  KC_F11,                        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   TG_MC,\
+  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+                                          KC_LCTL, KC_LSFT,  KC_SPC,      KC_NO,   KC_NO,   KC_NO\
+                                      //`--------------------------'  `--------------------------'
+  ),
 };
 
 
@@ -138,18 +151,14 @@ static bool lower_pressed = false;
 static bool raise_pressed = false;
 
 
-// switch
-bool is_mac = true;
-
-#define KC_SW is_mac ? KC_LGUI : KC_LALT
-
-bool is_switch_active = false;
-uint16_t switch_timer = 0;
+// ALT_TAB
+bool is_alt_tab_active = false;
+uint16_t alt_tab_timer = 0;
 
 void matrix_scan_user(void) {
-  if (is_switch_active && timer_elapsed(switch_timer) > 1000) {
-    unregister_code(KC_SW);
-    is_switch_active = false;
+  if (is_alt_tab_active && timer_elapsed(alt_tab_timer) > 1000) {
+    unregister_code(KC_LALT);
+    is_alt_tab_active = false;
   }
 }
 
@@ -160,6 +169,7 @@ void matrix_scan_user(void) {
 #endif
 
 
+// マクロキー
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   #ifdef OLED_ENABLE
     if (record->event.pressed) {
@@ -208,13 +218,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return false;
       break;
-    case SWITCH:
+    case ALT_TAB:
       if (record->event.pressed) {
-        if (!is_switch_active) {
-          is_switch_active = true;
-          register_code(KC_SW);
+        if (!is_alt_tab_active) {
+          is_alt_tab_active = true;
+          register_code(KC_LALT);
         }
-        switch_timer = timer_read();
+        alt_tab_timer = timer_read();
         register_code(KC_TAB);
       } else {
         unregister_code(KC_TAB);
@@ -257,6 +267,9 @@ void oled_render_layer_state(void) {
       break;
     case _ADJUST:
       oled_write_ln_P(PSTR("Adjust"), false);
+      break;
+    case _MINECRAFT:
+      oled_write_ln_P(PSTR("Minecraft"), false);
       break;
     default:
       oled_write_ln_P(PSTR("Undefined"), false);
