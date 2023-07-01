@@ -6,6 +6,7 @@
 // レイヤーの定義
 enum layers {
   _EUCALYN = 0,
+  _NAGINATA,
   _LOWER,
   _RAISE,
   _ADJUST,
@@ -16,7 +17,9 @@ enum custom_keycodes {
   RAISE = SAFE_RANGE,
   LOWER,
   ESC_MHEN,
-  ALT_TAB
+  ALT_TAB,
+  TO_NG,
+  TO_EUC,
 };
 
 // 複合キーを8文字までの変数に
@@ -37,9 +40,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
        KC_TAB,  HOME_A,  HOME_O,  HOME_E,  HOME_I,    KC_U,                         KC_G,  HOME_T,  HOME_N,  HOME_S,  HOME_B, JP_QUOT,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      ALT_TAB,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_F,                         KC_H,    KC_J,    KC_K,    KC_L, JP_SLSH,  KC_DEL,\
+        TO_NG,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_F,                         KC_H,    KC_J,    KC_K,    KC_L, JP_SLSH,  KC_DEL,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           KC_LSFT,   LOWER,  KC_SPC,     KC_ENT,   RAISE, KC_BSPC\
+                                      //`--------------------------'  `--------------------------'
+  ),
+
+  [_NAGINATA] = LAYOUT( \
+  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
+     ESC_MHEN,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,   KC_NO,\
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+       KC_TAB,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L, JP_SCLN, JP_QUOT,\
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+       TO_EUC,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M, JP_COMM,  JP_DOT, JP_SLSH,   KC_NO,\
+  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+                                            KC_NO,   LOWER,  KC_SPC,     KC_ENT,   RAISE, KC_BSPC\
                                       //`--------------------------'  `--------------------------'
   ),
 
@@ -217,6 +232,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return false;
       break;
+    case TO_NG:
+      if (record->event.pressed) {
+        layer_on(_NAGINATA);
+        tap_code(KC_HENK);
+        tap_code(KC_LANG1);
+      }
+      return false;
+      break;
+    case TO_EUC:
+      if (record->event.pressed) {
+        layer_off(_NAGINATA);
+        tap_code(KC_MHEN);
+        tap_code(KC_LANG2);
+      }
+      return false;
+      break;
     default:  // case: defaultレイヤーのことではなく、上記以外の意味 マクロキーでない他のすべてのキー
       if (record->event.pressed) {
         lower_pressed = false;
@@ -244,6 +275,9 @@ void oled_render_layer_state(void) {
   switch (get_highest_layer(layer_state)) {
     case _EUCALYN:
       oled_write_ln_P(PSTR("Eucalyn"), false);
+      break;
+    case _NAGINATA:
+      oled_write_ln_P(PSTR("Naginata"), false);
       break;
     case _LOWER:
       oled_write_ln_P(PSTR("Lower"), false);
