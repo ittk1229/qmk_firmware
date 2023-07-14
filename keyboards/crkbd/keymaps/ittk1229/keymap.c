@@ -171,6 +171,19 @@ void matrix_scan_user(void) {
 
 
 // マクロキー
+void switch_to_japanese_input(void) {
+  tap_code(KC_HENK);
+  tap_code(KC_LANG1);
+  layer_on(_NAGINATA);
+}
+
+
+void switch_to_english_input(void) {
+  tap_code(KC_MHEN);
+  tap_code(KC_LANG2);
+  layer_off(_NAGINATA);
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   #ifdef OLED_ENABLE
     if (record->event.pressed) {
@@ -188,9 +201,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         layer_off(_LOWER);
         update_tri_layer(_LOWER, _RAISE, _ADJUST);
         if (lower_pressed) {
-          tap_code(KC_MHEN);
-          tap_code(KC_LANG2);
-          layer_off(_NAGINATA);
+          switch_to_english_input();
         }
         lower_pressed = false;
       }
@@ -205,9 +216,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         layer_off(_RAISE);
         update_tri_layer(_LOWER, _RAISE, _ADJUST);
         if (raise_pressed) {
-          tap_code(KC_HENK);
-          tap_code(KC_LANG1);
-          layer_on(_NAGINATA);
+          switch_to_japanese_input();
         }
         raise_pressed = false;
       }
@@ -216,9 +225,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case ESC_MHEN:
       if (record->event.pressed){
         tap_code(KC_ESC);
-        tap_code(KC_MHEN);
-        tap_code(KC_LANG2);
-        layer_off(_NAGINATA);
+        switch_to_english_input();
       }
       return false;
       break;
