@@ -40,7 +40,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
        KC_TAB,  HOME_A,  HOME_O,  HOME_E,  HOME_I,    KC_U,                         KC_G,  HOME_T,  HOME_N,  HOME_S,  HOME_B, JP_QUOT,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-        TO_NG,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_F,                         KC_H,    KC_J,    KC_K,    KC_L, JP_SLSH,  KC_DEL,\
+      ALT_TAB,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_F,                         KC_H,    KC_J,    KC_K,    KC_L, JP_SLSH,  KC_DEL,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           KC_LSFT,   LOWER,  KC_SPC,     KC_ENT,   RAISE, KC_BSPC\
                                       //`--------------------------'  `--------------------------'
@@ -190,6 +190,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         if (lower_pressed) {
           tap_code(KC_MHEN);
           tap_code(KC_LANG2);
+          layer_off(_NAGINATA);
         }
         lower_pressed = false;
       }
@@ -206,6 +207,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         if (raise_pressed) {
           tap_code(KC_HENK);
           tap_code(KC_LANG1);
+          layer_on(_NAGINATA);
         }
         raise_pressed = false;
       }
@@ -216,6 +218,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         tap_code(KC_ESC);
         tap_code(KC_MHEN);
         tap_code(KC_LANG2);
+        layer_off(_NAGINATA);
       }
       return false;
       break;
@@ -243,8 +246,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case TO_EUC:
       if (record->event.pressed) {
         layer_off(_NAGINATA);
-        tap_code(KC_MHEN);
-        tap_code(KC_LANG2);
       }
       return false;
       break;
