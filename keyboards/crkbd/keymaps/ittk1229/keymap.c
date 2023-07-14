@@ -242,14 +242,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return false;
       break;
-    case TO_NG:
-      if (record->event.pressed) {
-        layer_on(_NAGINATA);
-        tap_code(KC_HENK);
-        tap_code(KC_LANG1);
-      }
-      return false;
-      break;
     case TO_EUC:
       if (record->event.pressed) {
         layer_off(_NAGINATA);
