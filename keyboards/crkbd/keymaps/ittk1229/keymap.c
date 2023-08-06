@@ -40,21 +40,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
        KC_TAB,  HOME_A,  HOME_O,  HOME_E,  HOME_I,    KC_U,                         KC_G,  HOME_T,  HOME_N,  HOME_S,  HOME_B, JP_QUOT,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      ALT_TAB,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_F,                         KC_H,    KC_J,    KC_K,    KC_L, JP_SLSH,  KC_DEL,\
+        TO_NG,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_F,                         KC_H,    KC_J,    KC_K,    KC_L, JP_SLSH,  KC_DEL,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LSFT,   LOWER,  KC_SPC,     KC_ENT,   RAISE, KC_BSPC\
+                                            KC_NO,   LOWER,  KC_SPC,     KC_ENT,   RAISE,   KC_NO\
                                       //`--------------------------'  `--------------------------'
   ),
 
   [_NAGINATA] = LAYOUT( \
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-     ESC_MHEN,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,    KC_P, KC_MINS,\
+     ESC_MHEN,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,    KC_P, JP_MINS,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
        KC_TAB,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L, JP_SCLN, JP_QUOT,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       TO_EUC,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M, JP_COMM,  JP_DOT, JP_SLSH,   KC_NO,\
+       TO_EUC,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M, JP_COMM,  JP_DOT, JP_SLSH,  KC_DEL,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LSFT,   LOWER,  KC_SPC,     KC_ENT,   RAISE, KC_BSPC\
+                                            KC_NO,   LOWER,  KC_SPC,     KC_ENT,   RAISE,   KC_NO\
                                       //`--------------------------'  `--------------------------'
   ),
 
@@ -66,7 +66,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
         KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,                      KC_LEFT, KC_DOWN,   KC_UP, KC_RGHT,   KC_NO,   KC_NO,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                            KC_NO,   LOWER,   KC_NO,      KC_NO,   RAISE,   KC_NO\
+                                            KC_NO,   LOWER,   KC_NO,    KC_BSPC,   RAISE,   KC_NO\
                                       //`--------------------------'  `--------------------------'
     ),
 
@@ -174,14 +174,12 @@ void matrix_scan_user(void) {
 void switch_to_japanese_input(void) {
   tap_code(KC_HENK);
   tap_code(KC_LANG1);
-  layer_on(_NAGINATA);
 }
 
 
 void switch_to_english_input(void) {
   tap_code(KC_MHEN);
   tap_code(KC_LANG2);
-  layer_off(_NAGINATA);
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -242,8 +240,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return false;
       break;
+    case TO_NG:
+      if (record->event.pressed) {
+        switch_to_japanese_input();
+        layer_on(_NAGINATA);
+      }
+      return false;
+      break;
     case TO_EUC:
       if (record->event.pressed) {
+        switch_to_english_input();
         layer_off(_NAGINATA);
       }
       return false;
