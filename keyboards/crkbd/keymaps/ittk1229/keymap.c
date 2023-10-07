@@ -6,6 +6,7 @@
 // レイヤーの定義
 enum layers {
   _EUCALYN = 0,
+  _EUCALYN_R,
   _NAGINATA,
   _LOWER,
   _RAISE,
@@ -20,6 +21,7 @@ enum custom_keycodes {
   ALT_TAB,
   TO_NG,
   TO_EUC,
+  REV_EU,
 };
 
 // 複合キーを8文字までの変数に
@@ -42,7 +44,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
         TO_NG,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_F,                         KC_H,    KC_J,    KC_K,    KC_L, JP_SLSH,  KC_DEL,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                            KC_NO,   LOWER,  KC_SPC,     KC_ENT,   RAISE,   KC_NO\
+                                           REV_EU,   LOWER,  KC_SPC,     KC_ENT,   RAISE,  REV_EU\
+                                      //`--------------------------'  `--------------------------'
+  ),
+
+    [_EUCALYN_R] = LAYOUT( \
+  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
+      JP_MINS,    KC_P,    KC_Y,    KC_D,    KC_R,    KC_M,                      JP_SCLN,  JP_DOT, JP_COMM,   KC_W,     KC_Q,ESC_MHEN,\
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+      JP_QUOT,  HOME_B,  HOME_S,  HOME_N,  HOME_T,    KC_G,                         KC_U,  HOME_I,  HOME_E,  HOME_O,  HOME_A,  KC_TAB,\
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+       KC_DEL, JP_SLSH,    KC_L,    KC_K,    KC_J,    KC_H,                         KC_F,    KC_V,    KC_C,    KC_X,    KC_Z,   TO_NG,\
+  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+                                            KC_NO,   RAISE,  KC_ENT,     KC_SPC,   LOWER,   KC_NO\
                                       //`--------------------------'  `--------------------------'
   ),
 
@@ -252,6 +266,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         switch_to_english_input();
         layer_off(_NAGINATA);
       }
+      return false;
+      break;
+    case REV_EU:
+      if (record->event.pressed) {
+        layer_on(_EUCALYN_R);
+      } else {
+        layer_off(_EUCALYN_R);
+      }
+
       return false;
       break;
     default:  // case: defaultレイヤーのことではなく、上記以外の意味 マクロキーでない他のすべてのキー
